@@ -52,7 +52,7 @@ class Articles(TimeLog):
         optimized_image_resize_method="cover",
         blank=True  # 'thumbnail', 'cover' or None
     )
-    category= models.ForeignKey(Category, verbose_name=_("category_id"), on_delete=models.CASCADE,default=34,related_name='_category')
+    category= models.ForeignKey(Category, verbose_name=_("category_id"), on_delete=models.CASCADE)
     tags = ArrayField(models.CharField(max_length=50, blank=True),blank=True)
     content = models.TextField()
     author_name = models.CharField(max_length=40)

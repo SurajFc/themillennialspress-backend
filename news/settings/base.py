@@ -19,6 +19,7 @@ THIRD_PARTY_APPS = (
     "rest_framework.authtoken",  # rest framework auth token
     "corsheaders",  # Cors
     "image_optimizer",  # image optimizer
+    'django_elasticsearch_dsl',#elasticsearch
    'django_cleanup.apps.CleanupConfig', #cleaning unused images (Always in last)
 
 )
@@ -29,6 +30,8 @@ INSTALLED_APPS = (
         "django.contrib.contenttypes",
         "django.contrib.sessions",
         "django.contrib.staticfiles",
+ 
+
     )
     + LOCAL_APPS
     + THIRD_PARTY_APPS
