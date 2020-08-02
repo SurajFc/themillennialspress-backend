@@ -18,7 +18,12 @@ from .views import (
     EditSuperUserStatusView,
     EditSuperUserPassword,
     AddSuperUserView,
-    GetTotalOverview
+    GetTotalOverview,
+    ArticleElasticSearchView,  # Articles Search ,
+    sendOTPView,  # OTP Email
+    VerifyOTPView,  # OTP verify
+    RandomPassswordGenerateView,  # Password sent
+    getTrendingNewsAdmin
 )
 
 app_name = "superadmin"
@@ -30,20 +35,25 @@ urlpatterns = [
     path("logout", SuperAdminLogoutView.as_view()),
     path("category", CategoryView.as_view()),
     path("editcategory", EditCategoryView.as_view()),
-    path('deletecategory',DeleteCategoryView.as_view()),
-    path('addarticle',AddArticleView.as_view()),
-    path('article/images',ArticleImagesView.as_view()),
-    path('article/getall',GetArticlesView.as_view()),
-    path('article/view/<str:slug>',GetDetailedArticle.as_view()),
-    path('changestatus',EditArticleStatusView.as_view()),
+    path('deletecategory', DeleteCategoryView.as_view()),
+    path('addarticle', AddArticleView.as_view()),
+    path('article/images', ArticleImagesView.as_view()),
+    path('article/getall', GetArticlesView.as_view()),
+    path('article/view/<str:slug>', GetDetailedArticle.as_view()),
+    path('changestatus', EditArticleStatusView.as_view()),
     # path('article',SearchArticleView.as_view()),
-    path('editarticle',EditArticleView.as_view()),
-    path('getUsers',GetSuperUserView.as_view()),
-    path('editsuperuser',EditSuperUserStatusView.as_view()),
-    path('superuserpass',EditSuperUserPassword.as_view()),
-    path('addsuperuser',AddSuperUserView.as_view()),
-    path('totalOverview',GetTotalOverview.as_view()),
+    path('editarticle', EditArticleView.as_view()),
+    path('getUsers', GetSuperUserView.as_view()),
+    path('editsuperuser', EditSuperUserStatusView.as_view()),
+    path('superuserpass', EditSuperUserPassword.as_view()),
+    path('addsuperuser', AddSuperUserView.as_view()),
+    path('totalOverview', GetTotalOverview.as_view()),
 
+    path('articles/search', ArticleElasticSearchView.as_view()),
+    path('forgot', sendOTPView.as_view()),
+    path('verifyotp', VerifyOTPView.as_view()),
+    path('newpass', RandomPassswordGenerateView.as_view()),
+    path('getTrending', getTrendingNewsAdmin.as_view()),
 
 
 ]

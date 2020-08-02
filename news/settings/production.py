@@ -6,13 +6,12 @@ ALLOWED_HOSTS = []
 
 # email settings
 # Settings for sending mail :
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.flockmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'abc@gmail.com'  # your email address
-EMAIL_HOST_PASSWORD = 'xxxyyxx#'  # your email password
+EMAIL_HOST_USER = 'info@themillennialspress.com'
+EMAIL_HOST_PASSWORD = 'Theworldisone69'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-
 # Database
 DATABASES = {
     'default': {
@@ -42,8 +41,8 @@ REST_FRAMEWORK = {
         'user': '1500/min',
         'loginAttempts': '100/hr',
     },
-     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-     'PAGE_SIZE':1,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 1,
 }
 
 
@@ -73,8 +72,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
 
-#elasticsearch settings
-ELASTICSEARCH_DSL={
+# elasticsearch settings
+ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'localhost:9200'
     },

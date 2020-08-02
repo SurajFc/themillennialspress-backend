@@ -44,11 +44,11 @@ class ArticleImageSerializer(ModelSerializer):
 
 #GEt Article Serializer
 class GetArticleSerializer(ModelSerializer):
-    category_name = CharField(source='category.name', read_only=True)
+    category = CategorySerializer()
 
     class Meta:
         model = Articles
-        fields = ('id','updated_at','subtitle','title','cover','category','tags','author_name','user','realease','is_active','slug','category_name')
+        fields = ('id','updated_at','category','subtitle','title','cover','tags','author_name','user','realease','is_active','slug')
 
     #For Media files
     def to_representation(self, instance):

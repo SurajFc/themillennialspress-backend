@@ -20,7 +20,7 @@ class ArticleDocument(Document):
     
     class Django:
         model = Articles 
-        fields = [ 'updated_at','title','subtitle', 'author_name','user', 'realease','is_active','slug' ]
+        fields = [ 'id','updated_at','title','subtitle', 'author_name','user', 'realease','is_active','slug' ]
         # related_models = [Category] 
 
     def get_queryset(self):

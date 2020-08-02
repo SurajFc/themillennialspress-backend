@@ -1,6 +1,7 @@
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 
 SECRET_KEY = "d8j!r@k)u9#vx95op=y)%ogm*tr3a4x4s^x!2*v6p_%i&5f^b1"
 
@@ -19,8 +20,9 @@ THIRD_PARTY_APPS = (
     "rest_framework.authtoken",  # rest framework auth token
     "corsheaders",  # Cors
     "image_optimizer",  # image optimizer
-    'django_elasticsearch_dsl',#elasticsearch
-   'django_cleanup.apps.CleanupConfig', #cleaning unused images (Always in last)
+    'django_elasticsearch_dsl',  # elasticsearch
+    # cleaning unused images (Always in last)
+    'django_cleanup.apps.CleanupConfig',
 
 )
 
@@ -30,7 +32,7 @@ INSTALLED_APPS = (
         "django.contrib.contenttypes",
         "django.contrib.sessions",
         "django.contrib.staticfiles",
- 
+
 
     )
     + LOCAL_APPS
@@ -81,9 +83,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
 ]
 
 # Internationalization
