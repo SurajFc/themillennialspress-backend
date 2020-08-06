@@ -108,3 +108,12 @@ class Donation(TimeLog):
         db_table = "donation"
         verbose_name = "donation"
         verbose_name_plural = "donations"
+
+
+class NewsLetter(TimeLog):
+    email = models.EmailField(_("email"), max_length=254, unique=True)
+
+    class Meta:
+        db_table = "newsletter"
+        verbose_name = "newsletter"
+        verbose_name_plural = "newsletters"

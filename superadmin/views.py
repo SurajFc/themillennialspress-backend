@@ -1,3 +1,4 @@
+from news.prevents import UserLoginRateThrottle
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.response import Response
@@ -60,7 +61,7 @@ def verifyOTP(one_time):
 
 class SuperAdminLoginView(APIView):
     permission_classes = (AllowAny,)
-    # throttle_classes = (UserLoginRateThrottle,)
+    throttle_classes = (UserLoginRateThrottle,)
 
     def post(self, request):
 

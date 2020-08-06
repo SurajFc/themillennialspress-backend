@@ -17,6 +17,7 @@ elasticsearch-dsl==7.2.1
 flake8==3.8.3
 future==0.18.2
 idna==2.10
+igramscraper==0.3.5
 isort==4.3.21
 kombu==4.6.11
 lazy-object-proxy==1.4.3
@@ -31,6 +32,7 @@ pylint==2.5.3
 pyotp==2.3.0
 python-dateutil==2.8.1
 python-resize-image==1.1.19
+python-slugify==3.0.2
 pytz==2020.1
 razorpay==1.2.0
 redis==3.5.3
@@ -38,6 +40,7 @@ requests==2.24.0
 six==1.15.0
 snowballstemmer==2.0.0
 sqlparse==0.3.1
+text-unidecode==1.2
 tinify==1.5.1
 toml==0.10.1
 urllib3==1.25.9

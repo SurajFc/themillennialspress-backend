@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+
 class AbstractBaseClassApiView(APIView):
     @property
     def serializer_class(self):
@@ -23,11 +24,10 @@ class AbstractBaseClassApiView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
-        
+
         if serializer.is_valid():
-            print("====>",request.data)
+
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-

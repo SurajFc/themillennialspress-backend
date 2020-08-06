@@ -1,3 +1,8 @@
+from igramscraper.instagram import Instagram
+from news.prevents import UserLoginRateThrottle
+from news.baseclass import AbstractBaseClassApiView
+from rest_framework.settings import api_settings
+from rest_framework.generics import ListAPIView
 import hashlib
 import hmac
 import razorpay
@@ -13,9 +18,9 @@ from superadmin.serializers import (
     GetArticleSerializer
 )
 from .models import (
-    Articles, Donation
+    Articles, Donation, NewsLetter
 )
-from .serializers import DonationSerializers
+from .serializers import DonationSerializers, NewsLetterSerializer
 from datetime import datetime
 # es = Elasticsearch()
 
@@ -44,7 +49,7 @@ class getTrendingNews(APIView):
 
     def get(self, request):
         try:
-            obj = Articles.objects.filter(is_active=True,
+            obj = Articles.objects.filter(is_active=True, realease__lt=cur_time,
                                           tags__contains=['trending'])
             print(obj)
             serializer = self.serilizer_class(obj, many=True)
@@ -59,8 +64,8 @@ class getPoliticsNews(APIView):
 
     def get(self, request):
         try:
-            obj = Articles.objects.filter(
-                is_active=True, category__slug="politics")
+            obj = Articles.objects.filter(realease__lt=cur_time,
+                                          is_active=True, category__slug="politics")
             print(obj)
             serializer = self.serilizer_class(obj, many=True)
             return Response(serializer.data)
@@ -140,3 +145,34 @@ class RazorPayOrderId(APIView):
 #         else:
 #             print("not ")
 #             return Response(status=400)
+
+
+# Get All Trending News
+class GetAllTrendingNews(ListAPIView):
+    permission_classes = (AllowAny,)
+
+    pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+    serializer_class = GetArticleSerializer
+    queryset = Articles.objects.filter(is_active=True, realease__lt=cur_time,
+                                       tags__contains=['trending'])
+
+
+# NewsLetter
+class NewsLetterView(AbstractBaseClassApiView):
+    throttle_classes = (UserLoginRateThrottle,)
+    serializer_class = NewsLetterSerializer
+    permission_classes = (AllowAny,)
+    http_method_names = ("post",)
+
+
+# class InstaFeedView(APIView):
+#     permision_classes = (AllowAny,)
+
+#     def get(self, request):
+#         instagram = Instagram()
+
+#         medias = instagram.get_medias("unpaid_media", 50)
+#         print(medias)
+#         media = medias[6]
+#         print(media)
+#         return Response(media)
