@@ -17,7 +17,6 @@ elasticsearch-dsl==7.2.1
 flake8==3.8.3
 future==0.18.2
 idna==2.10
-igramscraper==0.3.5
 isort==4.3.21
 kombu==4.6.11
 lazy-object-proxy==1.4.3

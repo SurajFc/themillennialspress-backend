@@ -1,4 +1,4 @@
-from igramscraper.instagram import Instagram
+
 from news.prevents import UserLoginRateThrottle
 from news.baseclass import AbstractBaseClassApiView
 from rest_framework.settings import api_settings
