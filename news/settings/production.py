@@ -1,27 +1,21 @@
 from .base import *
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # email settings
 # Settings for sending mail :
-EMAIL_HOST = 'smtp.flockmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'info@themillennialspress.com'
-EMAIL_HOST_PASSWORD = 'Theworldisone69'
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_USE_SSL = env('EMAIL_USE_SSL')
+
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': "django.db.backends.postgresql_psycopg2",
-        'NAME': "test",
-        'USER': "testuser",
-        'PASSWORD': "Admin@123",
-        'HOST': "localhost",
-        'PORT': "5432",
-    }
+    'default':  env.db('DATABASE_URL')
 }
 
 
@@ -40,9 +34,10 @@ REST_FRAMEWORK = {
         'anon': '500/hour',
         'user': '1500/min',
         'loginAttempts': '100/hr',
+        "newsletter": "5/hr"
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 1,
+    'PAGE_SIZE': 10,
 }
 
 
@@ -65,17 +60,20 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 # Celery Settings
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 
 # elasticsearch settings
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200'
+        'hosts': env('ELASTICSEARCH_DSL_HOST')
     },
 }
 ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'django_elasticsearch_dsl.signals.RealTimeSignalProcessor'
