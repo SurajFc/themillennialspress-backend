@@ -117,3 +117,14 @@ class NewsLetter(TimeLog):
         db_table = "newsletter"
         verbose_name = "newsletter"
         verbose_name_plural = "newsletters"
+
+
+class ArticlesCount(TimeLog):
+    article = models.OneToOneField("articles.Articles", verbose_name=_(
+        "Articles"), on_delete=models.CASCADE)
+    counter = models.IntegerField(_("count"))
+
+    class Meta:
+        db_table = "articlescount"
+        verbose_name = "ArticleCount"
+        verbose_name_plural = "ArticleCounts"

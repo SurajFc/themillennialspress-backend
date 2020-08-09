@@ -1,6 +1,7 @@
+
 from .base import *
 
-env_name = os.getenv('ENV_NAME', 'local')
+env_name = env('ENV_NAME')
 
 if env_name == 'stagi':
     from .stagi import *

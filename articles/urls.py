@@ -7,6 +7,8 @@ from .views import (
     GetAllTrendingNews,
     # RazorpayVerifySignature
     NewsLetterView,
+    GetAllPoliticalNews,
+    SiteMapView
 
 )
 
@@ -21,5 +23,7 @@ urlpatterns = [
     path('trending/all', GetAllTrendingNews.as_view()),
     # path('razorverify', RazorpayVerifySignature.as_view()),
     path('newsletter', NewsLetterView.as_view()),
+    path('political/all', GetAllPoliticalNews.as_view()),
+    path('mysitemaps', SiteMapView.as_view()),
 
 ]

@@ -1,11 +1,17 @@
 import os
+import environ
 
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
-SECRET_KEY = "d8j!r@k)u9#vx95op=y)%ogm*tr3a4x4s^x!2*v6p_%i&5f^b1"
+env = environ.Env(DEBUG=(bool, False))
+env_file = os.path.join(BASE_DIR, ".env")
+environ.Env.read_env(env_file)
 
-DEBUG = True
+
+SECRET_KEY = env.str("SECRET_KEY")
+
+DEBUG = env.bool("DEBUG")
 
 
 # Application definition
@@ -99,7 +105,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755

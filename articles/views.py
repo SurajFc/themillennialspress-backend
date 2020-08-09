@@ -1,4 +1,3 @@
-
 from news.prevents import UserLoginRateThrottle
 from news.baseclass import AbstractBaseClassApiView
 from rest_framework.settings import api_settings
@@ -159,7 +158,7 @@ class GetAllTrendingNews(ListAPIView):
 
 # NewsLetter
 class NewsLetterView(AbstractBaseClassApiView):
-    throttle_classes = (UserLoginRateThrottle,)
+    throttle_scope = "newsletter"
     serializer_class = NewsLetterSerializer
     permission_classes = (AllowAny,)
     http_method_names = ("post",)
@@ -176,3 +175,25 @@ class NewsLetterView(AbstractBaseClassApiView):
 #         media = medias[6]
 #         print(media)
 #         return Response(media)
+
+# Get All Political News
+class GetAllPoliticalNews(ListAPIView):
+    permission_classes = (AllowAny,)
+
+    pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+    serializer_class = GetArticleSerializer
+    queryset = Articles.objects.filter(is_active=True, realease__lt=cur_time,
+                                       category__slug="politics")
+
+
+class SiteMapView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            x = Articles.objects.filter(is_active=True, realease__lt=cur_time)
+
+            ser = GetArticleSerializer(x, many=True)
+            return Response(ser.data)
+        except:
+            pass
