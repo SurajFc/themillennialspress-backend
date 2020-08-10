@@ -127,4 +127,4 @@ class ArticlesCount(TimeLog):
     class Meta:
         db_table = "articlescount"
         verbose_name = "ArticleCount"
-        verbose_name_plural = "ArticleCounts"
+        verbose_name_plural = "ArticleCount"
