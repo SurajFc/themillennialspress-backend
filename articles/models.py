@@ -43,8 +43,8 @@ class Category(TimeLog):
 
 #Articles and others
 class Articles(TimeLog):
-    title = models.CharField(max_length=255, unique=True)
-    subtitle = models.CharField(max_length=255, default=' ', blank=True)
+    title = models.CharField(max_length=500, unique=True)
+    subtitle = models.CharField(max_length=500, default=' ', blank=True)
     cover = OptimizedImageField(
         upload_to="Articles",
         optimized_image_output_size=(400, 320),
