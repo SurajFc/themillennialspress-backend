@@ -31,7 +31,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '500/hour',
+        'anon': '500/min',
         'user': '1500/min',
         'loginAttempts': '100/hr',
         "newsletter": "5/hr"
@@ -72,9 +72,14 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
-CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:2000',
+    'http://localhost:3000',
+    env.str('MILLENNIALS'),
+    env.str('MILLENNIALSADMIN')
+]
 
 # elasticsearch settings
 ELASTICSEARCH_DSL = {
