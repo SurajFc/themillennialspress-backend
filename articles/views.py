@@ -20,10 +20,11 @@ from .models import (
     Articles, Donation, NewsLetter
 )
 from .serializers import DonationSerializers, NewsLetterSerializer
-from datetime import datetime
+#from datetime import datetime
+from django.utils import timezone
 # es = Elasticsearch()
 
-cur_time = datetime.now()
+cur_time = timezone.now()
 
 
 class getLatesNews(APIView):
