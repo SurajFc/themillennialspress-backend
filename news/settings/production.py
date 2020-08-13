@@ -1,7 +1,7 @@
 from .base import *
 
 
-ALLOWED_HOSTS = ['.themillennialspress.com', 'localhost']
+ALLOWED_HOSTS = ['.themillennialspress.com']
 
 
 # email settings
@@ -51,19 +51,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "media/"
 
 # Cookies settings
-# SESSION_COOKIE_HTTTPONLY = False
-# CSRF_COOKIE_HTTPONLY = False
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTTPONLY = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 # # Security
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
-# SECURE_REFERRER_POLICY = 'same-origin'
-# SECURE_SSL_REDIRECT = True
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
-# SECURE_HSTS_SECONDS = 60
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_SECONDS = 60
 
 # Celery Settings
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
@@ -72,13 +72,12 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
-#CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:2000',
-    'http://localhost:3000',
     env.str('MILLENNIALS'),
+    env.str('WWWMILLENNIALS'),
+    env.str('WWWMILLENNIALSADMIN'),
     env.str('MILLENNIALSADMIN')
 ]
 CORS_ALLOW_METHODS = [
@@ -86,7 +85,7 @@ CORS_ALLOW_METHODS = [
     'OPTIONS',
     'POST'
 ]
-ORS_ALLOW_HEADERS = [
+CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
     'authorization',
@@ -95,8 +94,9 @@ ORS_ALLOW_HEADERS = [
     'origin',
     'user-agent',
     'x-csrftoken',
-    'x-requested-with',
+    'x-requested-with'
 ]
+
 # elasticsearch settings
 ELASTICSEARCH_DSL = {
     'default': {
