@@ -19,8 +19,8 @@ from superadmin.serializers import (
 from .models import (
     Articles, Donation, NewsLetter
 )
-from .serializers import DonationSerializers, NewsLetterSerializer
-#from datetime import datetime
+from .serializers import DonationSerializers, NewsLetterSerializer, DetailedArticleSerializer
+# from datetime import datetime
 from django.utils import timezone
 # es = Elasticsearch()
 
@@ -186,6 +186,8 @@ class GetAllPoliticalNews(ListAPIView):
     queryset = Articles.objects.filter(is_active=True, realease__lt=cur_time,
                                        category__slug="politics")
 
+# For sitemaps
+
 
 class SiteMapView(APIView):
     permission_classes = (AllowAny,)
@@ -198,3 +200,17 @@ class SiteMapView(APIView):
             return Response(ser.data)
         except:
             pass
+
+
+class ViewArticleDetail(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, slug1, slug2):
+
+        # try:
+        x = Articles.objects.get(
+            category__slug=slug1, slug=slug2, is_active=True, realease__lt=cur_time)
+        ser = DetailedArticleSerializer(x)
+        return Response(ser.data)
+        # except Articles.DoesNotExist:
+        #     return Response(status=400)

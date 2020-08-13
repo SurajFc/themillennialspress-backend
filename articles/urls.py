@@ -8,7 +8,8 @@ from .views import (
     # RazorpayVerifySignature
     NewsLetterView,
     GetAllPoliticalNews,
-    SiteMapView
+    SiteMapView,
+    ViewArticleDetail
 
 )
 
@@ -25,5 +26,6 @@ urlpatterns = [
     path('newsletter', NewsLetterView.as_view()),
     path('political/all', GetAllPoliticalNews.as_view()),
     path('mysitemaps', SiteMapView.as_view()),
+    path('<str:slug1>/<str:slug2>', ViewArticleDetail.as_view()),
 
 ]
