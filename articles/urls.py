@@ -9,7 +9,8 @@ from .views import (
     NewsLetterView,
     GetAllPoliticalNews,
     SiteMapView,
-    ViewArticleDetail
+    ViewArticleDetail,
+    ArticleElasticSearchMainView
 
 )
 
@@ -27,5 +28,6 @@ urlpatterns = [
     path('political/all', GetAllPoliticalNews.as_view()),
     path('mysitemaps', SiteMapView.as_view()),
     path('<str:slug1>/<str:slug2>', ViewArticleDetail.as_view()),
+    path('search', ArticleElasticSearchMainView.as_view()),
 
 ]

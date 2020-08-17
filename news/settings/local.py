@@ -42,7 +42,8 @@ REST_FRAMEWORK = {
         "anon": "500/min",
         "user": "1000/min",
         "loginAttempts": "100/hr",
-        "newsletter": "5/hr"
+        "newsletter": "5/hr",
+        'search': "30/min"
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,

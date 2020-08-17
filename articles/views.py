@@ -212,5 +212,55 @@ class ViewArticleDetail(APIView):
             category__slug=slug1, slug=slug2, is_active=True, realease__lt=cur_time)
         ser = DetailedArticleSerializer(x)
         return Response(ser.data)
+
         # except Articles.DoesNotExist:
         #     return Response(status=400)
+
+
+class ArticleElasticSearchMainView(APIView):
+    permission_classes = (AllowAny,)
+    throttle_scope = "search"
+
+    def get(self, request):
+        # try:
+        es = Elasticsearch()
+        request = self.request
+        query = request.GET.get('q', None)
+        page = int(request.GET.get('page', 1))
+
+        PerPage = 10
+        q = {
+            "from": ((page-1)*PerPage),
+            "size": PerPage,
+            "query": {
+                "bool": {
+                    "must": {
+                        "multi_match": {
+                            "query": query,
+                            "fields": ["title^3", "subtitle^3", "tags^3", 'category.name^2', "author_name^2", 'user'],
+                            "fuzziness": "2",
+                        }
+                    },
+                    "must_not": [{
+                        "match": {
+                            "is_active": "false",
+                        }
+                    }],
+                }
+            }
+        }
+
+        res = es.search(index="articles", body=q)
+        count = res['hits']['total']['value']
+        final = []
+        for hit in res['hits']['hits']:
+            final.append(hit['_source'])
+
+        send_data = {
+            "count": count,
+            "results": final
+        }
+
+        return Response(send_data)
+        # except:
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)

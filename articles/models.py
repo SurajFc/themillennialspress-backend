@@ -60,6 +60,8 @@ class Articles(TimeLog):
     realease = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     slug = models.SlugField(unique=True, default=" ", max_length=255)
+    source = models.CharField(
+        _("source"), max_length=200, default="Millennials Team")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

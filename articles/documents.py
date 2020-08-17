@@ -10,6 +10,7 @@ class ArticleDocument(Document):
         'id': fields.TextField(),
         'name': fields.TextField(),
         'image': fields.FileField(),
+        'slug':fields.TextField(),
     })
     cover = fields.FileField()
     tags = fields.ListField(fields.TextField())
@@ -20,7 +21,7 @@ class ArticleDocument(Document):
     
     class Django:
         model = Articles 
-        fields = [ 'id','updated_at','title','subtitle', 'author_name','user', 'realease','is_active','slug' ]
+        fields = [ 'id','updated_at','title','subtitle', 'author_name','user', 'source','realease','is_active','slug' ]
         # related_models = [Category] 
 
     def get_queryset(self):
