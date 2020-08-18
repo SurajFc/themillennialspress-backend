@@ -23,7 +23,8 @@ from .views import (
     sendOTPView,  # OTP Email
     VerifyOTPView,  # OTP verify
     RandomPassswordGenerateView,  # Password sent
-    getTrendingNewsAdmin
+    getTrendingNewsAdmin,
+    getTopNewsAdmin
 )
 
 app_name = "superadmin"
@@ -54,6 +55,7 @@ urlpatterns = [
     path('verifyotp', VerifyOTPView.as_view()),
     path('newpass', RandomPassswordGenerateView.as_view()),
     path('getTrending', getTrendingNewsAdmin.as_view()),
+    path('getTopNews', getTopNewsAdmin.as_view()),
 
 
 ]

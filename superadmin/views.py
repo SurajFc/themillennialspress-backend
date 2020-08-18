@@ -16,8 +16,9 @@ from django.contrib.auth.models import update_last_login
 from news.prevents import *
 from news.baseclass import AbstractBaseClassApiView
 from articles.models import (
-    Category, Articles, ArticleImages
+    Category, Articles, ArticleImages, ArticlesCount
 )
+from articles.serializers import ArticlesCountSerializer
 from django.db.models import F
 
 from enum import IntEnum
@@ -61,7 +62,7 @@ def verifyOTP(one_time):
 
 class SuperAdminLoginView(APIView):
     permission_classes = (AllowAny,)
-    throttle_classes = (UserLoginRateThrottle,)
+    throttle_scope = "login"
 
     def post(self, request):
 
@@ -83,7 +84,7 @@ class SuperAdminLoginView(APIView):
 # Email Send for forgot password
 class sendOTPView(APIView):
     permission_classes = (AllowAny,)
-    throttle_classes = (UserLoginRateThrottle,)
+    throttle_scope = "login"
 
     def post(self, request):
         email = request.data['email']
@@ -101,7 +102,7 @@ class sendOTPView(APIView):
 
 class VerifyOTPView(APIView):
     permission_classes = (AllowAny,)
-    throttle_classes = (UserLoginRateThrottle,)
+    throttle_scope = "login"
 
     def post(self, request):
         email = request.data['email']
@@ -124,7 +125,7 @@ def RandomPasswordGenerate():
 # Random Password
 class RandomPassswordGenerateView(APIView):
     permission_classes = (AllowAny,)
-    throttle_classes = (UserLoginRateThrottle,)
+    throttle_scope = "login"
 
     def post(self, request):
         try:
@@ -497,3 +498,10 @@ class getTrendingNewsAdmin(ListAPIView):
                                        tags__contains=['trending'])
 
 # RazorPay OrderId
+
+
+class getTopNewsAdmin(ListAPIView):
+    permission_classes = (IsAdminUser,)
+    pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+    serializer_class = ArticlesCountSerializer
+    queryset = ArticlesCount.objects.all()

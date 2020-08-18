@@ -11,7 +11,8 @@ from .views import (
     SiteMapView,
     ViewArticleDetail,
     ArticleElasticSearchMainView,
-    ArticleCountView
+    ArticleCountView,
+
 
 )
 
