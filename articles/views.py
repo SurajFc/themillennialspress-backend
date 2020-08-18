@@ -17,9 +17,9 @@ from superadmin.serializers import (
     GetArticleSerializer
 )
 from .models import (
-    Articles, Donation, NewsLetter
+    Articles, Donation, NewsLetter, ArticlesCount
 )
-from .serializers import DonationSerializers, NewsLetterSerializer, DetailedArticleSerializer
+from .serializers import DonationSerializers, NewsLetterSerializer, DetailedArticleSerializer, ArticlesCountSerializer
 # from datetime import datetime
 from django.utils import timezone
 # es = Elasticsearch()
@@ -222,45 +222,64 @@ class ArticleElasticSearchMainView(APIView):
     throttle_scope = "search"
 
     def get(self, request):
-        # try:
-        es = Elasticsearch()
-        request = self.request
-        query = request.GET.get('q', None)
-        page = int(request.GET.get('page', 1))
+        try:
+            es = Elasticsearch()
+            request = self.request
+            query = request.GET.get('q', None)
+            page = int(request.GET.get('page', 1))
 
-        PerPage = 10
-        q = {
-            "from": ((page-1)*PerPage),
-            "size": PerPage,
-            "query": {
-                "bool": {
-                    "must": {
-                        "multi_match": {
-                            "query": query,
-                            "fields": ["title^3", "subtitle^3", "tags^3", 'category.name^2', "author_name^2", 'user'],
-                            "fuzziness": "2",
-                        }
-                    },
-                    "must_not": [{
-                        "match": {
-                            "is_active": "false",
-                        }
-                    }],
+            PerPage = 10
+            q = {
+                "from": ((page-1)*PerPage),
+                "size": PerPage,
+                "query": {
+                    "bool": {
+                        "must": {
+                            "multi_match": {
+                                "query": query,
+                                "fields": ["title^3", "subtitle^3", "tags^3", 'category.name^2', "author_name^2", 'user'],
+                                "fuzziness": "AUTO",
+                            }
+                        },
+                        "must_not": [{
+                            "match": {
+                                "is_active": "false",
+                            }
+                        }],
+                    }
                 }
             }
-        }
 
-        res = es.search(index="articles", body=q)
-        count = res['hits']['total']['value']
-        final = []
-        for hit in res['hits']['hits']:
-            final.append(hit['_source'])
+            res = es.search(index="articles", body=q)
+            count = res['hits']['total']['value']
+            final = []
+            for hit in res['hits']['hits']:
+                final.append(hit['_source'])
 
-        send_data = {
-            "count": count,
-            "results": final
-        }
+            send_data = {
+                "count": count,
+                "results": final
+            }
 
-        return Response(send_data)
-        # except:
-        #     return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(send_data)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class ArticleCountView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        print(request.data)
+        article = request.data['article']
+        print(article)
+        try:
+            x = ArticlesCount.objects.get(article=article)
+            x.counter += 1
+            x.save()
+            return Response()
+        except ArticlesCount.DoesNotExist:
+            print('in here', request.data)
+            ArticlesCount.objects.create(
+                article=Articles.objects.get(id=article), counter=1)
+            return Response()

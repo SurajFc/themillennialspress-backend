@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Donation, NewsLetter, Articles
+from .models import Donation, NewsLetter, Articles, ArticlesCount
 from superadmin.serializers import CategorySerializer
 
 
@@ -21,3 +21,9 @@ class DetailedArticleSerializer(ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Articles
+
+
+class ArticlesCountSerializer(ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = ArticlesCount

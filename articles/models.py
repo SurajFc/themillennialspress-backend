@@ -123,7 +123,7 @@ class NewsLetter(TimeLog):
 
 class ArticlesCount(TimeLog):
     article = models.OneToOneField("articles.Articles", verbose_name=_(
-        "Articles"), on_delete=models.CASCADE)
+        "article"), on_delete=models.CASCADE)
     counter = models.IntegerField(_("count"))
 
     class Meta:
