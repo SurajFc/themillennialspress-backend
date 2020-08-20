@@ -16,9 +16,9 @@ from django.contrib.auth.models import update_last_login
 from news.prevents import *
 from news.baseclass import AbstractBaseClassApiView
 from articles.models import (
-    Category, Articles, ArticleImages, ArticlesCount
+    Category, Articles, ArticleImages, ArticlesCount, NewsLetter
 )
-from articles.serializers import ArticlesCountSerializer
+from articles.serializers import ArticlesCountSerializer, NewsLetterSerializer
 from django.db.models import F
 
 from enum import IntEnum
@@ -505,3 +505,10 @@ class getTopNewsAdmin(ListAPIView):
     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
     serializer_class = ArticlesCountSerializer
     queryset = ArticlesCount.objects.all()
+
+
+class NewsLetterView(ListAPIView):
+    permission_classes = (IsAdminUser,)
+    pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+    serializer_class = NewsLetterSerializer
+    queryset = NewsLetter.objects.all()

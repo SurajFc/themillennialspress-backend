@@ -11,7 +11,7 @@ class DonationSerializers(ModelSerializer):
 
 class NewsLetterSerializer(ModelSerializer):
     class Meta:
-        fields = ['email']
+        fields = '__all__'
         model = NewsLetter
 
 
