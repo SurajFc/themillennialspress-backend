@@ -271,7 +271,7 @@ class GetDetailedArticle(APIView):
     def get(self, request, slug):
         try:
             x = Articles.objects.filter(slug=slug).values('updated_at', 'subtitle', 'title', 'cover', 'category', 'tags',
-                                                          'author_name', 'user', 'realease', 'is_active', 'slug', 'content', category_name=F('category__name'))
+                                                          'author_name', 'user', 'realease', 'is_active', 'slug', 'source', 'content', category_name=F('category__name'))
             return Response(x)
         except:
             return Response(status=status.HTTP_204_NO_CONTENT)

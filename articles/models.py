@@ -72,6 +72,9 @@ class Articles(TimeLog):
     def get_total_articles(self):
         return Articles.objects.filter(is_active=True).count()
 
+
+# 9216620621
+
     class Meta:
         db_table = "articles"
         verbose_name = "Article"
@@ -123,7 +126,7 @@ class NewsLetter(TimeLog):
 
 class ArticlesCount(TimeLog):
     article = models.OneToOneField("articles.Articles", verbose_name=_(
-        "article"), on_delete=models.CASCADE)
+        "article"), on_delete=models.CASCADE, related_name='article_count')
     counter = models.IntegerField(_("count"))
 
     class Meta:
