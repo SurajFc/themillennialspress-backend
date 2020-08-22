@@ -133,3 +133,4 @@ class ArticlesCount(TimeLog):
         db_table = "articlescount"
         verbose_name = "ArticleCount"
         verbose_name_plural = "ArticleCount"
+        ordering = ('-counter',)

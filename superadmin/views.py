@@ -497,9 +497,8 @@ class getTrendingNewsAdmin(ListAPIView):
     queryset = Articles.objects.filter(is_active=True,
                                        tags__contains=['trending'])
 
+
 # RazorPay OrderId
-
-
 class getTopNewsAdmin(ListAPIView):
     permission_classes = (IsAdminUser,)
     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS

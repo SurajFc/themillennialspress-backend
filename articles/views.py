@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny,  IsAuthenticated
 from superadmin.serializers import (
-    GetArticleSerializer
+    GetArticleSerializer,
 )
 from .models import (
     Articles, Donation, NewsLetter, ArticlesCount
@@ -23,7 +23,8 @@ from .serializers import DonationSerializers, NewsLetterSerializer, DetailedArti
 # from datetime import datetime
 from django.utils import timezone
 # es = Elasticsearch()
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 cur_time = timezone.now()
 
 
@@ -207,14 +208,14 @@ class ViewArticleDetail(APIView):
 
     def get(self, request, slug1, slug2):
 
-        # try:
-        x = Articles.objects.get(
-            category__slug=slug1, slug=slug2, is_active=True, realease__lt=cur_time)
-        ser = DetailedArticleSerializer(x)
-        return Response(ser.data)
+        try:
+            x = Articles.objects.get(
+                category__slug=slug1, slug=slug2, is_active=True, realease__lt=cur_time)
+            ser = DetailedArticleSerializer(x)
+            return Response(ser.data)
 
-        # except Articles.DoesNotExist:
-        #     return Response(status=400)
+        except Articles.DoesNotExist:
+            return Response(status=400)
 
 
 class ArticleElasticSearchMainView(APIView):
@@ -270,16 +271,35 @@ class ArticleCountView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        print(request.data)
         article = request.data['article']
-        print(article)
         try:
             x = ArticlesCount.objects.get(article=article)
             x.counter += 1
             x.save()
             return Response()
         except ArticlesCount.DoesNotExist:
-            print('in here', request.data)
             ArticlesCount.objects.create(
                 article=Articles.objects.get(id=article), counter=1)
             return Response()
+
+
+class MostViewedView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        try:
+            obj = Articles.objects.filter(
+                is_active=True, realease__lt=cur_time)[:5]
+            ser = GetArticleSerializer(obj, many=True)
+            f = []
+            for i in ser.data:
+                if i['count'] is None:
+                    i['count'] = 1
+                    f.append(i)
+                else:
+                    f.append(i)
+            f = sorted(f, key=lambda x: x['count'], reverse=True)
+            return Response(f)
+
+        except Articles.DoesNotExist:
+            return Response(status=400)
