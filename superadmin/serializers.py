@@ -54,7 +54,7 @@ class ArticleCountSerializer(ModelSerializer):
 
 class GetArticleSerializer(ModelSerializer):
     category = CategorySerializer(required=True)
-    count = serializers.IntegerField(source='article_count.counter')
+    count = serializers.IntegerField(source='articlescount.counter')
 
     class Meta:
         model = Articles
@@ -66,6 +66,8 @@ class GetArticleSerializer(ModelSerializer):
     def to_representation(self, instance):
         response = super(GetArticleSerializer,
                          self).to_representation(instance)
+
+        print(response)
 
         if instance.cover:
             response['cover'] = instance.cover.url

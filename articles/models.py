@@ -7,6 +7,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import ugettext_lazy as _
 from users.models import User
 from django.utils.functional import cached_property
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class TimeLog(models.Model):
@@ -72,9 +74,6 @@ class Articles(TimeLog):
     def get_total_articles(self):
         return Articles.objects.filter(is_active=True).count()
 
-
-# 9216620621
-
     class Meta:
         db_table = "articles"
         verbose_name = "Article"
@@ -125,12 +124,16 @@ class NewsLetter(TimeLog):
 
 
 class ArticlesCount(TimeLog):
-    article = models.OneToOneField("articles.Articles", verbose_name=_(
-        "article"), on_delete=models.CASCADE, related_name='article_count')
+    article = models.OneToOneField(
+        "articles.Articles", on_delete=models.CASCADE)
     counter = models.IntegerField(_("count"))
 
     class Meta:
         db_table = "articlescount"
-        verbose_name = "ArticleCount"
-        verbose_name_plural = "ArticleCount"
         ordering = ('-counter',)
+
+
+@receiver(post_save, sender=Articles)
+def article_post_save_receiver(sender, instance, created,  **kwargs):
+    if created:
+        ArticlesCount.objects.create(article=instance, counter=1)

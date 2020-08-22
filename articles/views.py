@@ -278,9 +278,7 @@ class ArticleCountView(APIView):
             x.save()
             return Response()
         except ArticlesCount.DoesNotExist:
-            ArticlesCount.objects.create(
-                article=Articles.objects.get(id=article), counter=1)
-            return Response()
+            return Response(status=400)
 
 
 class MostViewedView(APIView):
@@ -289,17 +287,10 @@ class MostViewedView(APIView):
     def get(self, request):
         try:
             obj = Articles.objects.filter(
-                is_active=True, realease__lt=cur_time)[:5]
+                is_active=True, realease__lt=cur_time).order_by('articlescount__counter')[:5]
             ser = GetArticleSerializer(obj, many=True)
-            f = []
-            for i in ser.data:
-                if i['count'] is None:
-                    i['count'] = 1
-                    f.append(i)
-                else:
-                    f.append(i)
-            f = sorted(f, key=lambda x: x['count'], reverse=True)
-            return Response(f)
+
+            return Response(ser.data)
 
         except Articles.DoesNotExist:
             return Response(status=400)
