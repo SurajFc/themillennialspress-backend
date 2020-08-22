@@ -20,12 +20,10 @@ from .models import (
     Articles, Donation, NewsLetter, ArticlesCount
 )
 from .serializers import DonationSerializers, NewsLetterSerializer, DetailedArticleSerializer, ArticlesCountSerializer
-# from datetime import datetime
-from django.utils import timezone
+from datetime import datetime
 # es = Elasticsearch()
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-cur_time = timezone.now()
 
 
 class getLatesNews(APIView):
@@ -34,8 +32,9 @@ class getLatesNews(APIView):
 
     def get(self, request):
         try:
+
             obj = Articles.objects.filter(
-                is_active=True, realease__lt=cur_time).order_by('-created_at')[:5]
+                is_active=True, realease__lt=datetime.now()).order_by('-created_at')[:5]
             serializer = self.serilizer_class(obj, many=True)
 
             return Response(serializer.data)
@@ -50,9 +49,8 @@ class getTrendingNews(APIView):
 
     def get(self, request):
         try:
-            obj = Articles.objects.filter(is_active=True, realease__lt=cur_time,
+            obj = Articles.objects.filter(is_active=True, realease__lt=datetime.now(),
                                           tags__contains=['trending'])
-            print(obj)
             serializer = self.serilizer_class(obj, many=True)
             return Response(serializer.data)
         except:
@@ -65,9 +63,9 @@ class getPoliticsNews(APIView):
 
     def get(self, request):
         try:
-            obj = Articles.objects.filter(realease__lt=cur_time,
+            obj = Articles.objects.filter(realease__lt=datetime.now(),
                                           is_active=True, category__slug="politics")
-            print(obj)
+
             serializer = self.serilizer_class(obj, many=True)
             return Response(serializer.data)
         except:
@@ -89,7 +87,6 @@ class RazorPayOrderId(APIView):
                        "receipt": "receipt#" + str(uuid.uuid1())[:8],  "payment_capture": 1}
 
             response = client.order.create(data=payload)
-            print(response)
 
             serializer = DonationSerializers(data=request.data)
             if serializer.is_valid():
@@ -100,7 +97,6 @@ class RazorPayOrderId(APIView):
                 return Response(response)
             return Response("error")
 
-            print("res--->",  request.data)
             try:
 
                 obj = Donation.objects.get(order_id=request.data['order_id'])
@@ -154,7 +150,7 @@ class GetAllTrendingNews(ListAPIView):
 
     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
     serializer_class = GetArticleSerializer
-    queryset = Articles.objects.filter(is_active=True, realease__lt=cur_time,
+    queryset = Articles.objects.filter(is_active=True, realease__lt=datetime.now(),
                                        tags__contains=['trending'])
 
 
@@ -184,7 +180,7 @@ class GetAllPoliticalNews(ListAPIView):
 
     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
     serializer_class = GetArticleSerializer
-    queryset = Articles.objects.filter(is_active=True, realease__lt=cur_time,
+    queryset = Articles.objects.filter(is_active=True, realease__lt=datetime.now(),
                                        category__slug="politics")
 
 # For sitemaps
@@ -195,7 +191,8 @@ class SiteMapView(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            x = Articles.objects.filter(is_active=True, realease__lt=cur_time)
+            x = Articles.objects.filter(
+                is_active=True, realease__lt=datetime.now())
 
             ser = GetArticleSerializer(x, many=True)
             return Response(ser.data)
@@ -210,7 +207,7 @@ class ViewArticleDetail(APIView):
 
         try:
             x = Articles.objects.get(
-                category__slug=slug1, slug=slug2, is_active=True, realease__lt=cur_time)
+                category__slug=slug1, slug=slug2, is_active=True, realease__lt=datetime.now())
             ser = DetailedArticleSerializer(x)
             return Response(ser.data)
 
@@ -287,7 +284,7 @@ class MostViewedView(APIView):
     def get(self, request):
         try:
             obj = Articles.objects.filter(
-                is_active=True, realease__lt=cur_time).order_by('-articlescount__counter')[:5]
+                is_active=True, realease__lt=datetime.now()).order_by('-articlescount__counter')[:5]
             ser = GetArticleSerializer(obj, many=True)
 
             return Response(ser.data)

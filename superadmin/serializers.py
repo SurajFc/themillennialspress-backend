@@ -67,8 +67,6 @@ class GetArticleSerializer(ModelSerializer):
         response = super(GetArticleSerializer,
                          self).to_representation(instance)
 
-        print(response)
-
         if instance.cover:
             response['cover'] = instance.cover.url
 
