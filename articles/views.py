@@ -287,7 +287,7 @@ class MostViewedView(APIView):
     def get(self, request):
         try:
             obj = Articles.objects.filter(
-                is_active=True, realease__lt=cur_time).order_by('articlescount__counter')[:5]
+                is_active=True, realease__lt=cur_time).order_by('-articlescount__counter')[:5]
             ser = GetArticleSerializer(obj, many=True)
 
             return Response(ser.data)
