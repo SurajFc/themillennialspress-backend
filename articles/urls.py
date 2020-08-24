@@ -13,7 +13,8 @@ from .views import (
     ArticleElasticSearchMainView,
     ArticleCountView,
     MostViewedView,
-    RelatedArticleView
+    RelatedArticleView,
+    CategoryDetailView
 
 )
 
@@ -35,4 +36,5 @@ urlpatterns = [
     path('articlecount', ArticleCountView.as_view()),
     path('mostviewed', MostViewedView.as_view()),
     path('related', RelatedArticleView.as_view()),
+    path('categorynews', CategoryDetailView.as_view()),
 ]
