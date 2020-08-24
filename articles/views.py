@@ -291,3 +291,21 @@ class MostViewedView(APIView):
 
         except Articles.DoesNotExist:
             return Response(status=400)
+
+
+class RelatedArticleView(APIView):
+    permission_classes = (AllowAny,)
+    serilizer_class = GetArticleSerializer
+
+    def get(self, request):
+        try:
+            slug = request.GET.get('slug', None)
+            obj = Articles.objects.filter(
+                is_active=True, realease__lt=datetime.now(), category__slug=slug).order_by('-created_at')[:10]
+            print("here", obj)
+            serializer = self.serilizer_class(obj, many=True)
+
+            return Response(serializer.data)
+
+        except:
+            return Response(status=400)
