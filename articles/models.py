@@ -1,3 +1,4 @@
+from django.core.cache import cache
 import uuid
 from django.db import models
 from django.urls import reverse
@@ -43,7 +44,7 @@ class Category(TimeLog):
         ordering = ('-updated_at',)
 
 
-#Articles and others
+# Articles and others
 class Articles(TimeLog):
     title = models.CharField(max_length=500, unique=True)
     subtitle = models.CharField(max_length=500, default=' ', blank=True)
@@ -136,3 +137,30 @@ class ArticlesCount(TimeLog):
 def article_post_save_receiver(sender, instance, created,  **kwargs):
     if created:
         ArticlesCount.objects.create(article=instance, counter=1)
+
+
+def deleteCache(instance):
+
+    cache.delete('latest')
+    cache.delete('mostV')
+    cache.delete(instance.category.slug+'_'+instance.slug)
+    cache.delete(instance.category.slug+'-R')
+    cache.delete('_'+instance.category.slug)
+    if instance.category.slug == 'politics':
+        cache.delete('political')
+
+    if 'trending' in instance.tags:
+        cache.delete('trending')
+        cache.delete_many(cache.keys("trending-*"))
+
+
+@receiver(post_save, sender=Articles)
+def invalidate_cache(sender, instance,   **kwargs):
+
+    if kwargs['created']:
+
+        deleteCache(instance)
+
+    else:
+
+        deleteCache(instance)

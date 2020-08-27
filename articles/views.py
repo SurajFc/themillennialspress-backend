@@ -22,8 +22,13 @@ from .models import (
 from .serializers import DonationSerializers, NewsLetterSerializer, DetailedArticleSerializer, ArticlesCountSerializer
 from datetime import datetime
 # es = Elasticsearch()
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
+
+
+from django.core.cache import cache
+from django.conf import settings
+
+
+CACHE_TTL = 3600
 
 
 class getLatesNews(APIView):
@@ -32,13 +37,18 @@ class getLatesNews(APIView):
 
     def get(self, request):
         try:
+            if 'latest' in cache:
 
-            obj = Articles.objects.filter(
-                is_active=True, realease__lt=datetime.now()).order_by('-created_at')[:5]
-            serializer = self.serilizer_class(obj, many=True)
+                latests = cache.get('latest')
+                return Response(latests)
+            else:
 
-            return Response(serializer.data)
-            # return Response(serializer.errors)
+                obj = Articles.objects.filter(
+                    is_active=True, realease__lt=datetime.now()).order_by('-created_at')[:5]
+                serializer = self.serilizer_class(obj, many=True)
+                cache.set('latest', serializer.data, timeout=CACHE_TTL)
+                return Response(serializer.data)
+
         except:
             return Response(status=400)
 
@@ -49,10 +59,17 @@ class getTrendingNews(APIView):
 
     def get(self, request):
         try:
-            obj = Articles.objects.filter(is_active=True, realease__lt=datetime.now(),
-                                          tags__contains=['trending'])
-            serializer = self.serilizer_class(obj, many=True)
-            return Response(serializer.data)
+            if 'trending' in cache:
+
+                trendings = cache.get('trending')
+                return Response(trendings)
+            else:
+
+                obj = Articles.objects.filter(is_active=True, realease__lt=datetime.now(),
+                                              tags__contains=['trending'])
+                serializer = self.serilizer_class(obj, many=True)
+                cache.set('trending', serializer.data, timeout=CACHE_TTL)
+                return Response(serializer.data)
         except:
             return Response(status=400)
 
@@ -63,11 +80,18 @@ class getPoliticsNews(APIView):
 
     def get(self, request):
         try:
-            obj = Articles.objects.filter(realease__lt=datetime.now(),
-                                          is_active=True, category__slug="politics")
+            if 'political' in cache:
 
-            serializer = self.serilizer_class(obj, many=True)
-            return Response(serializer.data)
+                politicals = cache.get('political')
+                return Response(politicals)
+            else:
+
+                obj = Articles.objects.filter(realease__lt=datetime.now(),
+                                              is_active=True, category__slug="politics")
+
+                serializer = self.serilizer_class(obj, many=True)
+                cache.set('political', serializer.data, timeout=CACHE_TTL)
+                return Response(serializer.data)
         except:
             return Response(status=400)
 
@@ -150,8 +174,24 @@ class GetAllTrendingNews(ListAPIView):
 
     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
     serializer_class = GetArticleSerializer
-    queryset = Articles.objects.filter(is_active=True, realease__lt=datetime.now(),
-                                       tags__contains=['trending'])
+
+    def get(self, request, *args, **kwargs):
+        page = request.GET.get('page', 1)
+        x = 'trending-'+str(page)
+        if x in cache:
+
+            trending = cache.get(x)
+            page = self.paginate_queryset(trending)
+            return self.get_paginated_response(page)
+        else:
+
+            queryset = Articles.objects.filter(
+                is_active=True, realease__lt=datetime.now(), tags__contains=['trending'])
+
+            serializer = self.serializer_class(queryset, many=True)
+            page = self.paginate_queryset(serializer.data)
+            cache.set(x, page, timeout=CACHE_TTL)
+            return self.get_paginated_response(page)
 
 
 # NewsLetter
@@ -175,13 +215,26 @@ class NewsLetterView(AbstractBaseClassApiView):
 #         return Response(media)
 
 # Get All Political News
-class GetAllPoliticalNews(ListAPIView):
-    permission_classes = (AllowAny,)
+# class GetAllPoliticalNews(ListAPIView):
+#     permission_classes = (AllowAny,)
 
-    pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
-    serializer_class = GetArticleSerializer
-    queryset = Articles.objects.filter(is_active=True, realease__lt=datetime.now(),
-                                       category__slug="politics")
+#     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+#     serializer_class = GetArticleSerializer
+
+#     def get(self, request, *args, **kwargs):
+#         page = request.GET.get('page', 1)
+#         x = 'politics-'+str(page)
+#         if x in cache:
+#             politicals = cache.get(x)
+#             return Response(politicals)
+#         else:
+#             queryset = Articles.objects.filter(is_active=True, realease__lt=datetime.now(),
+#                                                category__slug="politics")
+
+#             serializer = self.serializer_class(queryset, many=True)
+#             page = self.paginate_queryset(serializer.data)
+#             cache.set(x, serializer.data, timeout=CACHE_TTL)
+#             return self.get_paginated_response(page)
 
 # For sitemaps
 
@@ -206,10 +259,20 @@ class ViewArticleDetail(APIView):
     def get(self, request, slug1, slug2):
 
         try:
-            x = Articles.objects.get(
-                category__slug=slug1, slug=slug2, is_active=True, realease__lt=datetime.now())
-            ser = DetailedArticleSerializer(x)
-            return Response(ser.data)
+            x = slug1 + '_' + slug2
+
+            if x in cache:
+
+                article = cache.get(x)
+                return Response(article)
+            else:
+
+                y = Articles.objects.get(
+                    category__slug=slug1, slug=slug2, is_active=True, realease__lt=datetime.now())
+                ser = DetailedArticleSerializer(y)
+
+                cache.set(x, ser.data, timeout=CACHE_TTL)
+                return Response(ser.data)
 
         except Articles.DoesNotExist:
             return Response(status=400)
@@ -283,11 +346,17 @@ class MostViewedView(APIView):
 
     def get(self, request):
         try:
-            obj = Articles.objects.filter(
-                is_active=True, realease__lt=datetime.now()).order_by('-articlescount__counter')[:5]
-            ser = GetArticleSerializer(obj, many=True)
+            if 'mostV' in cache:
 
-            return Response(ser.data)
+                most = cache.get('mostV')
+                return Response(most)
+            else:
+
+                obj = Articles.objects.filter(
+                    is_active=True, realease__lt=datetime.now()).order_by('-articlescount__counter')[:5]
+                ser = GetArticleSerializer(obj, many=True)
+                cache.set('mostV', ser.data, timeout=CACHE_TTL)
+                return Response(ser.data)
 
         except Articles.DoesNotExist:
             return Response(status=400)
@@ -300,12 +369,19 @@ class RelatedArticleView(APIView):
     def get(self, request):
         try:
             slug = request.GET.get('slug', None)
-            obj = Articles.objects.filter(
-                is_active=True, realease__lt=datetime.now(), category__slug=slug).order_by('-created_at')[:10]
+            x = slug + '-R'
+            if x in cache:
 
-            serializer = self.serilizer_class(obj, many=True)
+                related = cache.get(x)
+                return Response(related)
+            else:
 
-            return Response(serializer.data)
+                obj = Articles.objects.filter(
+                    is_active=True, realease__lt=datetime.now(), category__slug=slug).order_by('-created_at')[:10]
+
+                serializer = self.serilizer_class(obj, many=True)
+                cache.set(x, serializer.data, timeout=CACHE_TTL)
+                return Response(serializer.data)
 
         except:
             return Response(status=400)
@@ -316,8 +392,20 @@ class CategoryDetailView(ListAPIView):
     serializer_class = GetArticleSerializer
     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
 
-    def get_queryset(self):
-        slug = self.request.query_params.get('slug', None)
-        queryset = Articles.objects.filter(
-            is_active=True, realease__lt=datetime.now(), category__slug=slug).order_by('-created_at')
-        return queryset
+    def get(self, request, *args, **kwargs):
+        page = request.GET.get('page', 1)
+        slug = request.GET.get('slug')
+        x = '_'+slug
+        # cache.delete('_world')
+        if x in cache:
+            category = cache.get(x)
+            page = self.paginate_queryset(category)
+            return self.get_paginated_response(page)
+        else:
+            queryset = Articles.objects.filter(
+                is_active=True, realease__lt=datetime.now(), category__slug=slug).order_by('-created_at')
+
+            serializer = self.serializer_class(queryset, many=True)
+            page = self.paginate_queryset(serializer.data)
+            cache.set(x, page, timeout=CACHE_TTL)
+            return self.get_paginated_response(page)
