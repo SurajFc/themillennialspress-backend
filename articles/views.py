@@ -395,7 +395,7 @@ class CategoryDetailView(ListAPIView):
     def get(self, request, *args, **kwargs):
         page = request.GET.get('page', 1)
         slug = request.GET.get('slug')
-        x = '_'+slug+'_'+page
+        x = '_'+slug+'_'+str(page)
         # cache.delete('_world')
         if x in cache:
             category = cache.get(x)
