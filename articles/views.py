@@ -38,7 +38,6 @@ class getLatesNews(APIView):
     def get(self, request):
         try:
             if 'latest' in cache:
-
                 latests = cache.get('latest')
                 return Response(latests)
             else:
@@ -51,6 +50,47 @@ class getLatesNews(APIView):
 
         except:
             return Response(status=400)
+
+
+class getLatesNewsALL(APIView):
+    permission_classes = (AllowAny,)
+    serilizer_class = GetArticleSerializer
+
+    def get(self, request):
+        try:
+            if 'latestAll' in cache:
+                latests = cache.get('latestAll')
+                return Response(latests)
+            else:
+                obj = Articles.objects.filter(
+                    is_active=True, realease__lt=datetime.now()).order_by('-created_at')[:10]
+                serializer = self.serilizer_class(obj, many=True)
+                cache.set('latestAll', serializer.data, timeout=CACHE_TTL)
+                return Response(serializer.data)
+
+        except:
+            return Response(status=400)
+
+
+class GetAllLatestNews(ListAPIView):
+    permission_classes = (AllowAny,)
+    pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+    serializer_class = GetArticleSerializer
+
+    def get(self, request, *args, **kwargs):
+        page = request.GET.get('page', 1)
+        x = 'latest-'+str(page)
+        # if x in cache:
+        #     latest = cache.get(x)
+        #     page = self.paginate_queryset(latest)
+        #     return self.get_paginated_response(page)
+        # else:
+        queryset = Articles.objects.filter(
+            is_active=True, realease__lt=datetime.now()).order_by('-created_at')
+        serializer = self.serializer_class(queryset, many=True)
+        page = self.paginate_queryset(serializer.data)
+        # cache.set(x, page, timeout=CACHE_TTL)
+        return self.get_paginated_response(page)
 
 
 class getTrendingNews(APIView):

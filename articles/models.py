@@ -143,6 +143,8 @@ def deleteCache(instance):
 
     cache.delete('latest')
     cache.delete('mostV')
+    cache.delete('latestAll')
+    cache.delete_many(cache.keys("latest-*"))
     cache.delete(instance.category.slug+'_'+instance.slug)
     cache.delete(instance.category.slug+'-R')
     cache.delete('_'+instance.category.slug)

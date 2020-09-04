@@ -14,7 +14,9 @@ from .views import (
     ArticleCountView,
     MostViewedView,
     RelatedArticleView,
-    CategoryDetailView
+    CategoryDetailView,
+    getLatesNewsALL,
+    GetAllLatestNews
 
 )
 
@@ -22,6 +24,7 @@ app_name = "articles"
 
 urlpatterns = [
     path('getLatestnews', getLatesNews.as_view()),
+    path('getLatestnews/all', getLatesNewsALL.as_view()),
     path('getTrendingNews', getTrendingNews.as_view()),
     path('getPoliticsNews', getPoliticsNews.as_view()),
     path('razorpay', RazorPayOrderId.as_view()),
@@ -37,4 +40,5 @@ urlpatterns = [
     path('mostviewed', MostViewedView.as_view()),
     path('related', RelatedArticleView.as_view()),
     path('categorynews', CategoryDetailView.as_view()),
+    path('latest', GetAllLatestNews.as_view()),
 ]
