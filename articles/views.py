@@ -80,17 +80,17 @@ class GetAllLatestNews(ListAPIView):
     def get(self, request, *args, **kwargs):
         page = request.GET.get('page', 1)
         x = 'latest-'+str(page)
-        # if x in cache:
-        #     latest = cache.get(x)
-        #     page = self.paginate_queryset(latest)
-        #     return self.get_paginated_response(page)
-        # else:
-        queryset = Articles.objects.filter(
-            is_active=True, realease__lt=datetime.now()).order_by('-created_at')
-        serializer = self.serializer_class(queryset, many=True)
-        page = self.paginate_queryset(serializer.data)
-        # cache.set(x, page, timeout=CACHE_TTL)
-        return self.get_paginated_response(page)
+        if x in cache:
+            latest = cache.get(x)
+            page = self.paginate_queryset(latest)
+            return self.get_paginated_response(page)
+        else:
+            queryset = Articles.objects.filter(
+                is_active=True, realease__lt=datetime.now()).order_by('-created_at')
+            serializer = self.serializer_class(queryset, many=True)
+            page = self.paginate_queryset(serializer.data)
+            # cache.set(x, page, timeout=CACHE_TTL)
+            return self.get_paginated_response(page)
 
 
 class getTrendingNews(APIView):
