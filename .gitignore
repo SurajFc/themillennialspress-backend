@@ -8,7 +8,8 @@ db.sqlite3
 db.sqlite3-journal
 media
 logs
-**/migrations/
+migrations
+
 
 
 ### Django.Python Stack ###
